@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  div.content
+    h3 Dostępne przedmioty:
+    each przedmiot in przedmioty
+      div.przedmiot_item
+        a(href=`/przedmioty/${przedmiot.przedmiot_id}`)= `${przedmiot.nazwa} - ${przedmiot.miejsce}`

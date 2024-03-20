@@ -1,0 +1,51 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+a {
+  color: black;
+}
+
+.content a:link {
+  text-decoration: none;
+}
+
+.content a:visited {
+  text-decoration: none;
+}
+
+.content a:hover {
+  text-decoration: underline;
+}
+
+.content a:active {
+  text-decoration: underline;
+}
+
+.nav_title {
+  width: 100%;
+  background-color: #e89c8d;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.content {
+  padding: 50px;
+  margin: 0 200px 0 200px;
+  background-color: #e7caca;
+  min-height: 85vh;
+  font-size: 15px;
+}
+
+.przedmiot_item {
+  width: 100%;
+  background-color: #d9b9b9;
+  margin-bottom: 5px;
+  padding: 5px;
+}
