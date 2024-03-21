@@ -161,9 +161,6 @@ block content
                     const nazwisko = document.getElementById('lastName').value;
                     if (daySelect[0].selectedIndex == -1 || daySelect[1].selectedIndex == -1 || imie.length == 0 || nazwisko.length == 0) {
                         rezerwacjaInfo.textContent = 'Uzupełnij brakujące informacje!';
-                        console.log(daySelect.selectedIndex);
-                        console.log(imie);
-                        console.log(nazwisko);
                     } else {
                         const selectedYear1 = yearSelect[0].value;
                         const selectedMonth1 = monthSelect[0].value;
@@ -197,11 +194,11 @@ block content
                                 console.error('Błąd podczas dokonywania rezerwacji:', err);
                                 rezerwacjaInfo.textContent = 'Wystąpił błąd podczas rezerwacji.';
                             });
+                        generateDayOptions(0);
+                        checkReservationsForMonth(0);
+                        generateDayOptions(1);
+                        checkReservationsForMonth(1);
                     }
-                    generateDayOptions(0);
-                    checkReservationsForMonth(0);
-                    generateDayOptions(1);
-                    checkReservationsForMonth(1);
                 };
 
                 rezerwacjaButton.addEventListener('click', redirectToReservation);
