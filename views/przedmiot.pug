@@ -6,4 +6,93 @@ block content
         h3= miejsce
         h4= opis
 
+        br
+        br
 
+        h3 Sprawdź dostępność:
+
+        div#calendar(data-przedmiot-id=pi)
+            select#monthSelect
+                option(value="01") Styczeń
+                option(value="02") Luty
+                option(value="03") Marzec
+                option(value="04") Kwiecień
+                option(value="05") Maj
+                option(value="06") Czerwiec
+                option(value="07") Lipiec
+                option(value="08") Sierpień
+                option(value="09") Wrzesień
+                option(value="10") Październik
+                option(value="11") Listopad
+                option(value="12") Grudzień
+
+            select#daySelect
+
+            script.
+                const przedmiotId = document.getElementById('calendar').dataset.przedmiotId;
+
+                const monthSelect = document.getElementById('monthSelect');
+                const daySelect = document.getElementById('daySelect');
+
+                const daysInMonth = {
+                    "01": 31, "02": 28, "03": 31, "04": 30, "05": 31, "06": 30,
+                    "07": 31, "08": 31, "09": 30, "10": 31, "11": 30, "12": 31
+                };
+
+                const generateDayOptions = () => {
+                    const selectedMonth = monthSelect.value;
+                    const daysCount = daysInMonth[selectedMonth];
+
+                    daySelect.innerHTML = '';
+                    for (let i = 1; i <= daysCount; i++) {
+                        const dayValue = i < 10 ? `0${i}` : `${i}`;
+                        const option = document.createElement('option');
+                        option.value = dayValue;
+                        option.textContent = dayValue;
+                        daySelect.appendChild(option);
+                    }
+                };
+
+                const checkReservationsForMonth = () => {
+                    const selectedMonth = monthSelect.value;
+                    let firstAvailableDay = null;
+
+                    let isAnyDayAvailable = false;
+
+                    for (let i = 1; i <= 31; i++) {
+                        if (i < 10) {
+                            i = `0${i}`;
+                        }
+                        const selectedDate = `2024-${selectedMonth}-${i}`;
+
+                        fetch(`/przedmioty/${przedmiotId}/${selectedDate}`)
+                            .then(response => response.json())
+                            .then(reservations => {
+                                console.log(reservations);
+                                if (!reservations['isReserved'] && firstAvailableDay === null) {
+                                    firstAvailableDay = i;
+                                }
+                                if (reservations['isReserved']) {
+                                    daySelect.querySelector(`option[value="${i}"]`).disabled = true;
+                                } else {
+                                    isAnyDayAvailable = true;
+                                    daySelect.querySelector(`option[value="${i}"]`).disabled = false;
+                                }
+
+                                if (!isAnyDayAvailable) {
+                                    daySelect.selectedIndex = -1;
+                                } else if (firstAvailableDay !== null) {
+                                    daySelect.value = firstAvailableDay;
+                                }
+                            })
+                            .catch(err => console.error('Błąd pobierania rezerwacji:', err));
+                    }
+                };
+
+                monthSelect.addEventListener('change', () => {
+                    generateDayOptions();
+                    checkReservationsForMonth();
+                });
+
+                generateDayOptions();
+                checkReservationsForMonth();
