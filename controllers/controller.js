@@ -145,4 +145,27 @@ const addRezerwacja = (imie, nazwisko, przedmiotId, start, stop, callback) => {
     });
 };
 
-module.exports = { db, getAllItems, getPrzedmiot, getRezerwacje, checkRezerwacja, addRezerwacja };
+const getRezerwacja = (rezerwacjaId, callback) => {
+    const sql = 'SELECT * FROM rezerwacje WHERE rezerwacja_id = ?';
+    db.get(sql, [rezerwacjaId], (err, row) => {
+        if (err) {
+            return callback(err, null);
+        }
+        if (!row) {
+            return callback(new Error('Rezerwacja nie została znaleziona'), null);
+        }
+        callback(null, row);
+    });
+};
+
+const deleteRezerwacja = (rezerwacjaId, callback) => {
+    const sql = 'DELETE FROM rezerwacje WHERE rezerwacja_id = ?';
+    db.run(sql, [rezerwacjaId], function (err) {
+        if (err) {
+            return callback(err);
+        }
+        return callback(null);
+    });
+};
+
+module.exports = { db, getAllItems, getPrzedmiot, getRezerwacje, checkRezerwacja, addRezerwacja, getRezerwacja, deleteRezerwacja };

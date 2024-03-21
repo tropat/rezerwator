@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    div.content
+        h3 Podaj identyfikator rezerwacji:
+        br
+        input#rezerwacjaId(type="text" name="rezerwacjaId")
+        button#sprawdzButton Sprawdź
+
+        p#rezerwacjaDane
+        button#anulujButton Anuluj rezerwację
+        p#anulujInfo
+
+        script(type='text/javascript', src='../javascripts/rezerwacja.js')
