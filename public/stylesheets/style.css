@@ -78,3 +78,12 @@ a {
   margin-top: 20px;
 }
 
+.przedmioty {
+  border-top: solid 2px;
+}
+
+.rezerwacja {
+  margin-bottom: 20px;
+  background-color: #c29494;
+  padding: 2px;
+}
