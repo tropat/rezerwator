@@ -19,7 +19,7 @@ router.get('/rezerwacje', (req, res) => {
       console.error('Błąd pobierania rezerwacji:', err);
       return res.status(500).json({ error: 'Wystąpił błąd podczas pobierania rezerwacji' });
     }
-    res.json(rows); // Zwróć wszystkie rekordy z tabeli rezerwacje
+    res.json(rows);
   });
 });
 

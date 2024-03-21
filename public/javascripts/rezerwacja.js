@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(rezerwacja => {
                 if (rezerwacja.error) {
-                    rezerwacjaDane.textContent = rezerwacja.error; // Wyświetlenie komunikatu błędu
+                    rezerwacjaDane.textContent = rezerwacja.error;
                     return;
                 }
 
@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const stop = rezerwacja.stop;
 
                 rezerwacjaDane.textContent = `Rezerwacja: ${nazwa} - ${miejsce} dla ${imie} ${nazwisko}, od ${start} do ${stop}`;
-                anulujButton.style.display = 'block'; // Pokazanie przycisku anulowania
+                anulujButton.style.display = 'block';
 
             })
             .catch(error => {
                 anulujButton.style.display = 'none';
-                rezerwacjaDane.textContent = 'Brak rezerwacji w systemie';
+                rezerwacjaDane.textContent = 'Brak podanej rezerwacji w systemie';
             });
 
     });
@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/rezerwacja/${rezerwacjaId}/anuluj`, { method: 'DELETE' })
             .then(response => response.json())
             .then(result => {
-                rezerwacjaDane.textContent = result.message; // Wyświetlenie komunikatu po usunięciu rezerwacji
-                anulujButton.style.display = 'none'; // Ukrycie przycisku anulowania po usunięciu rezerwacji
+                rezerwacjaDane.textContent = result.message;
+                anulujButton.style.display = 'none';
             })
             .catch(error => {
                 console.error('Błąd podczas usuwania rezerwacji:', error.message);
