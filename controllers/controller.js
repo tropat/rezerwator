@@ -134,4 +134,14 @@ const checkRezerwacja = (przedmiotId, date, callback) => {
     });
 };
 
-module.exports = { db, getAllItems, getPrzedmiot, getRezerwacje, checkRezerwacja };
+const addRezerwacja = (imie, nazwisko, przedmiotId, start, stop, callback) => {
+    const sql = 'INSERT INTO rezerwacje (imie, nazwisko, przedmiot_id, start, stop) VALUES (?, ?, ?, ?, ?)';
+    db.run(sql, [imie, nazwisko, przedmiotId, start, stop], function (err) {
+        if (err) {
+            return callback(err, null);
+        }
+        callback(null, this.lastID);
+    });
+};
+
+module.exports = { db, getAllItems, getPrzedmiot, getRezerwacje, checkRezerwacja, addRezerwacja };

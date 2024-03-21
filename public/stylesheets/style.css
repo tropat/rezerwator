@@ -37,7 +37,7 @@ a {
 
 .content {
   padding: 50px;
-  margin: 0 200px 0 200px;
+  margin: 0 15% 0 15%;
   background-color: #e7caca;
   min-height: 85vh;
   font-size: 15px;
@@ -48,4 +48,24 @@ a {
   background-color: #d9b9b9;
   margin-bottom: 5px;
   padding: 5px;
+}
+
+#calendar1 {
+  margin-top: 60px;
+  border-top: solid 2px;
+  padding-top: 20px;
+}
+
+#rezerwacjaInfo {
+  color: red;
+}
+
+.option-disabled {
+  background-color: #9f2727;
+  color: white;
+}
+
+.option-available {
+  background-color: #248524;
+  color: white;
 }
