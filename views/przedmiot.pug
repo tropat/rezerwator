@@ -6,14 +6,15 @@ block content
         h3= miejsce
         h4= opis
 
-        div#calendar(data-przedmiot-id=pi)
+        div#calendar1(data-przedmiot-id=pi)
             h3 Dokonaj rezerwacji przedmiotu:
-            select#yearSelect
+            p Od:
+            select#yearSelect1
                 option(value="2024" selected) 2024
                 option(value="2025") 2025
                 option(value="2026") 2026
 
-            select#monthSelect
+            select#monthSelect1
                 option(value="01") Styczeń
                 option(value="02") Luty
                 option(value="03") Marzec
@@ -27,7 +28,30 @@ block content
                 option(value="11") Listopad
                 option(value="12") Grudzień
 
-            select#daySelect
+            select#daySelect1
+
+        div#calendar2(data-przedmiot-id=pi)
+            p Do:
+            select#yearSelect2
+                option(value="2024" selected) 2024
+                option(value="2025") 2025
+                option(value="2026") 2026
+
+            select#monthSelect2
+                option(value="01") Styczeń
+                option(value="02") Luty
+                option(value="03") Marzec
+                option(value="04") Kwiecień
+                option(value="05") Maj
+                option(value="06") Czerwiec
+                option(value="07") Lipiec
+                option(value="08") Sierpień
+                option(value="09") Wrzesień
+                option(value="10") Październik
+                option(value="11") Listopad
+                option(value="12") Grudzień
+
+            select#daySelect2
 
         div#daneUzytkownika
             label(for="firstName") Imię:
@@ -42,10 +66,10 @@ block content
 
             script.
                 const rezerwacjaButton = document.getElementById('rezerwacjaButton');
-                const przedmiotId = document.getElementById('calendar').dataset.przedmiotId;
-                const monthSelect = document.getElementById('monthSelect');
-                const daySelect = document.getElementById('daySelect');
-                const yearSelect = document.getElementById('yearSelect');
+                const przedmiotId = document.getElementById('calendar1').dataset.przedmiotId;
+                const monthSelect = [document.getElementById('monthSelect1'), document.getElementById('monthSelect2')];
+                const daySelect = [document.getElementById('daySelect1'), document.getElementById('daySelect2')];
+                const yearSelect = [document.getElementById('yearSelect1'), document.getElementById('yearSelect2')];
                 const rezerwacjaInfo = document.getElementById('rezerwacjaInfo');
 
                 const daysInMonth = {
@@ -53,87 +77,104 @@ block content
                     "07": 31, "08": 31, "09": 30, "10": 31, "11": 30, "12": 31
                 };
 
-                const generateDayOptions = () => {
-                    const selectedMonth = monthSelect.value;
-                    const daysCount = daysInMonth[selectedMonth];
+                const generateDayOptions = (j) => {
 
-                    daySelect.innerHTML = '';
-                    for (let i = 1; i <= daysCount; i++) {
-                        const dayValue = i < 10 ? `0${i}` : `${i}`;
-                        const option = document.createElement('option');
-                        option.value = dayValue;
-                        option.textContent = dayValue;
-                        daySelect.appendChild(option);
-                    }
+                        const selectedMonth = monthSelect[j].value;
+                        const daysCount = daysInMonth[selectedMonth];
+
+                        daySelect[j].innerHTML = '';
+                        for (let i = 1; i <= daysCount; i++) {
+                            const dayValue = i < 10 ? `0${i}` : `${i}`;
+                            const option = document.createElement('option');
+                            option.value = dayValue;
+                            option.textContent = dayValue;
+                            daySelect[j].appendChild(option);
+                        }
+
                 };
 
-                const checkReservationsForMonth = () => {
-                    const selectedYear = yearSelect.value;
-                    const selectedMonth = monthSelect.value;
-                    let firstAvailableDay = null;
-                    let isAnyDayAvailable = false;
+                const checkReservationsForMonth = (j) => {
+                        const selectedYear = yearSelect[j].value;
+                        const selectedMonth = monthSelect[j].value;
+                        let firstAvailableDay = null;
+                        let isAnyDayAvailable = false;
 
-                    for (let i = 1; i <= 31; i++) {
-                        if (i < 10) {
-                            i = `0${i}`;
+                        for (let i = 1; i <= 31; i++) {
+                            if (i < 10) {
+                                i = `0${i}`;
+                            }
+                            const selectedDate = `${selectedYear}-${selectedMonth}-${i}`;
+
+                            fetch(`/przedmioty/${przedmiotId}/${selectedDate}`)
+                                .then(response => response.json())
+                                .then(reservations => {
+                                    const option = daySelect[j].querySelector(`option[value="${i}"]`);
+
+                                    if (!option) return; // Sprawdź czy opcja istnieje
+
+                                    if (!reservations['isReserved'] && firstAvailableDay === null) {
+                                        firstAvailableDay = i;
+                                    }
+                                    if (reservations['isReserved']) {
+                                        option.classList.add('option-disabled');
+                                        option.disabled = true;
+                                    } else {
+                                        option.classList.add('option-available');
+                                        option.disabled = false;
+                                        isAnyDayAvailable = true;
+                                    }
+
+                                    if (!isAnyDayAvailable) {
+                                        daySelect[j].selectedIndex = -1;
+                                    } else if (firstAvailableDay !== null) {
+                                        daySelect[j].value = firstAvailableDay;
+                                    }
+                                })
+                                .catch(err => console.error('Błąd pobierania rezerwacji:', err));
                         }
-                        const selectedDate = `${selectedYear}-${selectedMonth}-${i}`;
 
-                        fetch(`/przedmioty/${przedmiotId}/${selectedDate}`)
-                            .then(response => response.json())
-                            .then(reservations => {
-                                const option = daySelect.querySelector(`option[value="${i}"]`);
-
-                                if (!option) return; // Sprawdź czy opcja istnieje
-
-                                if (!reservations['isReserved'] && firstAvailableDay === null) {
-                                    firstAvailableDay = i;
-                                }
-                                if (reservations['isReserved']) {
-                                    option.classList.add('option-disabled');
-                                    option.disabled = true;
-                                } else {
-                                    option.classList.add('option-available');
-                                    option.disabled = false;
-                                    isAnyDayAvailable = true;
-                                }
-
-                                if (!isAnyDayAvailable) {
-                                    daySelect.selectedIndex = -1;
-                                } else if (firstAvailableDay !== null) {
-                                    daySelect.value = firstAvailableDay;
-                                }
-                            })
-                            .catch(err => console.error('Błąd pobierania rezerwacji:', err));
-                    }
                 };
 
                 // Dodaj nasłuchiwanie zmiany roku i miesiąca
-                yearSelect.addEventListener('change', () => {
-                    generateDayOptions();
-                    checkReservationsForMonth();
+                yearSelect[0].addEventListener('change', () => {
+                    generateDayOptions(0);
+                    checkReservationsForMonth(0);
                 });
 
-                monthSelect.addEventListener('change', () => {
-                    generateDayOptions();
-                    checkReservationsForMonth();
+                yearSelect[1].addEventListener('change', () => {
+                    generateDayOptions(1);
+                    checkReservationsForMonth(1);
+                });
+
+                monthSelect[0].addEventListener('change', () => {
+                    generateDayOptions(0);
+                    checkReservationsForMonth(0);
+                });
+
+                monthSelect[1].addEventListener('change', () => {
+                    generateDayOptions(1);
+                    checkReservationsForMonth(1);
                 });
 
                 const redirectToReservation = () => {
                     const imie = document.getElementById('firstName').value;
                     const nazwisko = document.getElementById('lastName').value;
-                    if (daySelect.selectedIndex == -1 || imie.length == 0 || nazwisko.length == 0) {
+                    if (daySelect[0].selectedIndex == -1 || daySelect[1].selectedIndex == -1 || imie.length == 0 || nazwisko.length == 0) {
                         rezerwacjaInfo.textContent = 'Uzupełnij brakujące informacje!';
                         console.log(daySelect.selectedIndex);
                         console.log(imie);
                         console.log(nazwisko);
                     } else {
-                        const selectedYear = yearSelect.value;
-                        const selectedMonth = monthSelect.value;
-                        const selectedDay = daySelect.value;
-                        const reservationDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
-                        const start = reservationDate;
-                        const stop = reservationDate;
+                        const selectedYear1 = yearSelect[0].value;
+                        const selectedMonth1 = monthSelect[0].value;
+                        const selectedDay1 = daySelect[0].value;
+                        const reservationDate_from = `${selectedYear1}-${selectedMonth1}-${selectedDay1}`;
+                        const selectedYear2 = yearSelect[1].value;
+                        const selectedMonth2 = monthSelect[1].value;
+                        const selectedDay2 = daySelect[1].value;
+                        const reservationDate_to = `${selectedYear2}-${selectedMonth2}-${selectedDay2}`;
+                        const start = reservationDate_from;
+                        const stop = reservationDate_to;
 
                         // Wyślij żądanie POST, aby dokonać rezerwacji
                         fetch(`/przedmioty/${przedmiotId}/rezerwacja`, {
@@ -157,10 +198,15 @@ block content
                                 rezerwacjaInfo.textContent = 'Wystąpił błąd podczas rezerwacji.';
                             });
                     }
-                    checkReservationsForMonth();
+                    generateDayOptions(0);
+                    checkReservationsForMonth(0);
+                    generateDayOptions(1);
+                    checkReservationsForMonth(1);
                 };
 
                 rezerwacjaButton.addEventListener('click', redirectToReservation);
 
-                generateDayOptions();
-                checkReservationsForMonth();
+                generateDayOptions(0);
+                checkReservationsForMonth(0);
+                generateDayOptions(1);
+                checkReservationsForMonth(1);

@@ -75,18 +75,19 @@ const db = new sqlite3.Database('rezerwator.db', err => {
                     ['Rzutnik', 'Rzutnik do prezentacji', 'A-2-06']);
                 db.run('INSERT INTO przedmioty (nazwa, opis, miejsce) VALUES (?, ?, ?)',
                     ['Rzutnik', 'Rzutnik do prezentacji', 'A-2-07']);
-            } else {
-                db.run('DELETE FROM rezerwacje', (err) => {
-                    if (err) {
-                        console.error('Błąd usuwania danych:', err);
-                    } else {
-                        console.log('Usunięto istniejące dane z tabeli rezerwacje');
-                    }});
-                db.run('INSERT INTO rezerwacje (imie, nazwisko, przedmiot_id, start, stop) VALUES (?, ?, ?, ?, ?)',
-                    ['Jan', 'Kowalski', 1517, '2024-03-01', '2024-03-02']);
-                db.run('INSERT INTO rezerwacje (imie, nazwisko, przedmiot_id, start, stop) VALUES (?, ?, ?, ?, ?)',
-                    ['Jan', 'Kowalski', 1517, '2024-01-01', '2024-01-31']);
             }
+            // else {
+            //     db.run('DELETE FROM rezerwacje', (err) => {
+            //         if (err) {
+            //             console.error('Błąd usuwania danych:', err);
+            //         } else {
+            //             console.log('Usunięto istniejące dane z tabeli rezerwacje');
+            //         }});
+            //     db.run('INSERT INTO rezerwacje (imie, nazwisko, przedmiot_id, start, stop) VALUES (?, ?, ?, ?, ?)',
+            //         ['Jan', 'Kowalski', 1517, '2024-03-01', '2024-03-02']);
+            //     db.run('INSERT INTO rezerwacje (imie, nazwisko, przedmiot_id, start, stop) VALUES (?, ?, ?, ?, ?)',
+            //         ['Jan', 'Kowalski', 1517, '2024-01-01', '2024-01-31']);
+            // }
         });
     }
 });
